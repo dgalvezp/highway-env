@@ -85,10 +85,7 @@ class HighwayEnv(AbstractEnv):
         lane = self.vehicle.target_lane_index[2] if isinstance(self.vehicle, ControlledVehicle) \
             else self.vehicle.lane_index[2]
         scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
-        # lane_change, double penalization if lane is changed to left lane
-        if action == 0: lane_change = 2
-        elif action == 2: lane_change = 1
-        else: lane_change = 0
+        lane_change = action == 0 or action == 2
         reward = \
             + self.config["collision_reward"] * self.vehicle.crashed \
             + self.config["right_lane_reward"] * lane / max(len(neighbours) - 1, 1) \
